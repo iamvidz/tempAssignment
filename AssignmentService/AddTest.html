@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Create test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="Home.html">CLASSROOM</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="AddTest.html">Create Test</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="addQue.html">Add Questions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="upload.html">Upload Assignments</a>
+                    </li>
+                    <hr />
+                    <li class="nav-item ">
+                        <input type="button" id="btnLogout" value="Sign Out" class="nav-link text-white btn btn-danger" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+            <div>
+                <div class="p-3 m-lg-5 bg-body rounded">
+                    <h3>Create Test</h3><br />
+                    <h5>Test Title <input id="title" type="text" class="form-control" required /></h5>
+                    <h5>Due Date <input id="deadline" type="datetime-local" class="form-control" required /></h5>
+
+                    <h5> Number Of Questions <input id="howmany" type="number" class="form-control" required /></h5>
+
+                    <button id="addtest" class="btn btn-primary my-3">
+                        Create
+                    </button>
+                    <br /><br /><br /><br />
+                    <label id="score" class="alert alert-danger hidden"></label>
+                    <!--Bootstrap alert to display error message if the login fails-->
+                    <div id="divError" class="alert alert-danger collapse">
+
+
+                        <a id="linkClose" href="#" class="close">&times;</a>
+                        <div id="divErrorText"></div>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+    <script src="Scripts/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            if (sessionStorage.getItem('accessToken') == null) {
+                window.location.href = "Login.html";
+            }
+
+            $('#btnLogout').click(function () {
+                sessionStorage.removeItem('accessToken');
+                window.location.href = "Login.html";
+            });
+
+            //if ($('#howmany').val() > 0) {
+
+            //}
+
+            $('#addtest').click(function () {
+                $.ajax({
+                    url: '/api/Postedtest',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: {
+                        title: $('#title').val(),
+                        duedate: $('#deadline').val(),
+                        ques: $('#howmany').val()
+                    },
+                    success: function () {
+                        window.location.href = "Posted.html";
+                    },
+                    error: function (jqXHR) {
+                        $('#divErrorText').text(jqXHR.responseText);
+                        $('#divError').show('fade');
+                    }
+                });
+            });
+            
+        });
+    </script>
+</body>
+</html>

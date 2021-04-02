@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Create test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="Home.html">CLASSROOM</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="AddTest.html">Create Test</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="addQue.html">Add Questions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="upload.html">Upload Assignments</a>
+                    </li>
+                    <hr />
+                    <li class="nav-item ">
+                        <input type="button" id="btnLogout" value="Sign Out" class="nav-link text-white btn btn-danger" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <button id="btnload" class="btn btn-primary pull-right">Load</button>
+    <div id="divData" class="well container">
+        <table class="table table-bordered" id="tblData">
+            <thead>
+                <tr class="success">
+                    <td>ID</td>
+                    <td>Title</td>
+                    <td>Due Date</td>
+                    <td>No. of Questions</td>
+                </tr>
+            </thead>
+            <tbody id="tblBody"></tbody>
+        </table>
+    </div>
+    <div id="divError" class="alert alert-danger collapse">
+
+
+        <a id="linkClose" href="#" class="close">&times;</a>
+        <div id="divErrorText"></div>
+    </div>
+    <script src="Scripts/jquery-3.4.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (sessionStorage.getItem('accessToken') == null) {
+                window.location.href = "Login.html";
+            }
+
+            $('#btnLogout').click(function () {
+                sessionStorage.removeItem('accessToken');
+                window.location.href = "Login.html";
+            });
+
+            $('#btnload').click(function () {
+                $.ajax({
+                    url: '/api/Postedtest',
+                    method: 'GET',
+                    success: function () {
+                        $('#tblBody').empty();
+                        $.each(data, function (index, value) {
+                            var row = $('<tr><td>' + value.ID + '</td><td>'
+                                + value.title + '</td><td>'
+                                + value.duedate + '</td><td>'
+                                + value.ques + '</td></tr>');
+                            $('#tblData').append(row);
+                        });
+                    },
+                    error: function (jqXHR) {
+
+                        $('#divErrorText').text(jqXHR.responseText);
+                        $('#divError').show('fade');
+                    
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
